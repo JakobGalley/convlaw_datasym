@@ -56,7 +56,7 @@ These will then be augmented by $C_3$ permutation of the indices in $\mathbb{R}^
 
 Then we setup exact gradient descents for the original and augmented training data, as well as computation of the conservation laws
 
-$$ \frac{W_1 + W_2 - 2*W_3}{W_1 - W_2}$$
+$$ \frac{W_1 + W_2 - 2W_3}{W_1 - W_2}$$
 
 which describes the position of $W_3$ in the range of $W_1$ and $W_2$ (the Pluecker Line of $W_1$ and $W_2$).
 Note that this is equivalent to
