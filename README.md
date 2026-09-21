@@ -95,7 +95,7 @@ The Lightning Attention model is of the following form
 $$ f_{Q, K, V}(X) = XQ K^TX^TXV $$
 
 for $Q, K \in\mathbb{R}^{d\times r}$, $V\in\mathbb{R}^{d\times m}$ and $X \in\mathbb{R}^{n\times d}$ for `r = 1`.
-We calculate the conversation law by comparing the orthogonal projection operators of $P = \begin{bmatrix} Q K V \end{bmatrix}$.
+We calculate the conversation law by comparing the orthogonal projection operators of $P = [Q \ K \ V]$.
 Let $P = USV$ be the SVD decomposition of $P$, then the orthogonal projection to the range of $P$ is given by $UU^T$.
 
 For our multiple training runs - here $6$ - we initialize the weights as `init_scale` scaled random weights such that their `minimum_singular_value` of `P0` is high enough.
