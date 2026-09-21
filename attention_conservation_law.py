@@ -1,10 +1,23 @@
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as pe
 import matplotlib.lines as mlines
 
+
+### Model ###
+
+def lightning_attention(params, X):
+    Q, K, V = params
+
+    Z = np.einsum("sni,snj->sij", X, X)          # X^T X, shape (N,d,d)
+    A = np.einsum("sni,ir->snr", X, Q)          # XQ, shape (N,n,r)
+    C = np.einsum("ir,sij,jm->srm", K, Z, V)    # K^T Z V, shape (N,r,m)
+    F = np.einsum("snr,srm->snm", A, C)         # shape (N,n,m)
+
+    return F
+
+
+### Plot parameters ###
 
 plt.rcParams.update({
     "text.usetex": False,
@@ -22,17 +35,17 @@ plt.rcParams.update({
     "axes.spines.right": False
 })
 
+### Other parameters ###
 
 np.random.seed(13)
 
-
+# Dimensions
 d = 8
 n = 5
 r = 1
 m = 1
 
 num_base = 10
-
 
 num_haar_pairs = 2048
 
@@ -43,18 +56,56 @@ data_scale = 0.80
 teacher_scale = 1.50
 init_scale = 0.40
 
+### Creation of training data ###
+
+X_base = data_scale * np.random.randn(num_base, n, d)
 
 
-def lightning_attention(params, X):
-    Q, K, V = params
+teacher_params = (
+    teacher_scale * np.random.randn(d, r),
+    teacher_scale * np.random.randn(d, r),
+    teacher_scale * np.random.randn(d, m),
+)
 
-    Z = np.einsum("sni,snj->sij", X, X)          # X^T X, shape (N,d,d)
-    A = np.einsum("sni,ir->snr", X, Q)          # XQ, shape (N,n,r)
-    C = np.einsum("ir,sij,jm->srm", K, Z, V)    # K^T Z V, shape (N,r,m)
-    F = np.einsum("snr,srm->snm", A, C)         # shape (N,n,m)
+Y_base = lightning_attention(teacher_params, X_base)
 
-    return F
 
+def random_orthogonal(d):
+    """
+    Sample a Haar-distributed element of O(d) using QR decomposition.
+    """
+    A = np.random.randn(d, d)
+    Q, R = np.linalg.qr(A)
+
+    signs = np.sign(np.diag(R))
+    signs[signs == 0.0] = 1.0
+    Q = Q * signs
+
+    return Q
+
+
+G_samples = []
+
+for _ in range(num_haar_pairs):
+    g = random_orthogonal(d)
+    G_samples.append(g)
+    G_samples.append(-g)
+
+G_samples = np.stack(G_samples, axis=0)
+num_haar_samples = G_samples.shape[0]
+
+print("Number of Haar samples:", num_haar_samples)
+print("Number of augmented data points:", num_base * num_haar_samples)
+
+
+X_aug = np.einsum("sni,kij->sknj", X_base, G_samples).reshape(
+    num_base * num_haar_samples, n, d
+)
+
+# Labels are invariant under the right O(d)-action.
+Y_aug = np.repeat(Y_base, num_haar_samples, axis=0)
+
+### Setup gradient descent and conservation laws ###
 
 def loss_and_grad(params, X, Y):
     Q, K, V = params
@@ -83,56 +134,6 @@ def loss_and_grad(params, X, Y):
     grad_V = np.einsum("sij,jr,srm->im", Z, K, grad_C)
 
     return loss, (grad_Q, grad_K, grad_V)
-
-
-
-X_base = data_scale * np.random.randn(num_base, n, d)
-
-
-teacher_params = (
-    teacher_scale * np.random.randn(d, r),
-    teacher_scale * np.random.randn(d, r),
-    teacher_scale * np.random.randn(d, m),
-)
-
-Y_base = lightning_attention(teacher_params, X_base)
-
-
-def random_orthogonal(d):
-    """
-    Sample a Haar-distributed element of O(d) using QR decomposition.
-    """
-    A = np.random.randn(d, d)
-    Q, R = np.linalg.qr(A)
-
-    signs = np.sign(np.diag(R))
-    signs[signs == 0.0] = 1.0
-    Q = Q * signs
-
-    return Q
-
-
-
-G_samples = []
-
-for _ in range(num_haar_pairs):
-    g = random_orthogonal(d)
-    G_samples.append(g)
-    G_samples.append(-g)
-
-G_samples = np.stack(G_samples, axis=0)
-num_haar_samples = G_samples.shape[0]
-
-print("Number of Haar samples:", num_haar_samples)
-print("Number of augmented data points:", num_base * num_haar_samples)
-
-
-X_aug = np.einsum("sni,kij->sknj", X_base, G_samples).reshape(
-    num_base * num_haar_samples, n, d
-)
-
-# Labels are invariant under the right O(d)-action.
-Y_aug = np.repeat(Y_base, num_haar_samples, axis=0)
 
 
 def projector_from_params(params):
@@ -190,7 +191,6 @@ def gradient_descent(grad_fn, params_init):
     return np.array(distances), np.array(losses)
 
 
-
 def random_initialization(min_singular_value=0.08):
    
 
@@ -207,8 +207,6 @@ def random_initialization(min_singular_value=0.08):
 
 
 initializations = [random_initialization() for _ in range(6)]
-
-
 
 dist_standard = []
 dist_augmented = []
@@ -232,7 +230,7 @@ print(dist_augmented[:, -1])
 print("\nMax standard distance:", np.max(dist_standard))
 print("Max augmented distance:", np.max(dist_augmented))
 
-
+### Plotting ###
 
 fig, ax = plt.subplots(figsize=(8, 6), facecolor='white')
 

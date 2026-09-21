@@ -1,10 +1,9 @@
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as pe
 import matplotlib.lines as mlines
 
+### Plot parameters ###
 
 plt.rcParams.update({
     "text.usetex": False,
@@ -23,16 +22,21 @@ plt.rcParams.update({
 })
 
 
+### Other parameters ###
+
 np.random.seed(42)
 
-# 4 entirely random base points and random labels
-X_base = np.random.randn(4, 3) * 2.0
-Y_base = np.random.randn(4, 1)
+n_base = 4
+
+### Creation of training data ###
+
+X_base = np.random.randn(n_base, 3) * 2.0
+Y_base = np.random.randn(n_base, 1)
 
 
 X_aug = []
 Y_aug = []
-for i in range(4):
+for i in range(n_base):
     x = X_base[i]
     y = Y_base[i]
 
@@ -48,9 +52,8 @@ Y_base = np.array(Y_base)
 X_aug = np.array(X_aug)
 Y_aug = np.array(Y_aug)
 
-# ==========================================
-# 3. Exact MSE Gradient Setup
-# ==========================================
+### Setup gradient descent and conservation laws ###
+
 def grad_standard(W):
     err = (X_base @ W) - Y_base.flatten()
     return np.mean(2.0 * err[:, None] * X_base, axis=0)
@@ -72,6 +75,7 @@ def gradient_descent(grad_fn, W_init, lr=0.015, steps=150):
 def compute_integral(W):
     num = W[0] - W[1]
     den = W[0] + W[1] - 2.0 * W[2]
+    # return den/num if np.abs(den) > 1e-8 else np.nan
     return num / den if np.abs(den) > 1e-8 else np.nan
 
 def compute_deviation(traj, floor=1e-16):
@@ -120,6 +124,7 @@ devs_aug = np.array([
 mean_std = np.nanmean(devs_std, axis=0)
 mean_aug = np.nanmean(devs_aug, axis=0)
 
+### Plotting ###
 
 fig, ax = plt.subplots(figsize=(8, 6), facecolor='white')
 

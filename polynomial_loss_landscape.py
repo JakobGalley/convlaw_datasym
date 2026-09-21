@@ -2,11 +2,12 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+### Model  ###
 
 def model(z):
     return 0.012 * z**6 - 0.22 * z**4 + z**2
 
-
+### Creation of training data ###
 
 X_raw = np.array([
     [ 1.00,  0.20],
@@ -42,6 +43,8 @@ G = np.stack([
 n_grid = 260
 lim = 2.4
 
+### Calculate loss landscape ###
+
 p1 = np.linspace(-lim, lim, n_grid)
 p2 = np.linspace(-lim, lim, n_grid)
 
@@ -62,7 +65,6 @@ X_aug = np.einsum("gij,sj->gsi", G, X_data)
 z_aug = X_aug @ P.T
 # z_aug = np.einsum("gsi,ki->gsk", X_aug, P)
 pred_aug = model(z_aug)
-
 loss_aug = np.mean((pred_aug - y_data[None, :, None])**2, axis=(0, 1))
 Z_aug = loss_aug.reshape(P1.shape)
 
@@ -84,7 +86,7 @@ X_aug_flat = X_aug_plot.reshape(-1, 2)
 
 y_aug_flat = np.repeat(y_data, num_group_elements)
 
-
+### Plotting ###
 
 plain_scale = [
     [0.00, "#2b183f"],
@@ -396,4 +398,4 @@ fig.update_yaxes(axis_style_2d, row=2, col=1, scaleanchor="x", scaleratio=1)
 fig.update_xaxes(axis_style_2d, row=2, col=2)
 fig.update_yaxes(axis_style_2d, row=2, col=2, scaleanchor="x2", scaleratio=1)
 
-fig.show()
+# fig.show()
