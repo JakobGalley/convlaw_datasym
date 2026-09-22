@@ -398,4 +398,4 @@ fig.update_yaxes(axis_style_2d, row=2, col=1, scaleanchor="x", scaleratio=1)
 fig.update_xaxes(axis_style_2d, row=2, col=2)
 fig.update_yaxes(axis_style_2d, row=2, col=2, scaleanchor="x2", scaleratio=1)
 
-# fig.show()
+fig.show()
