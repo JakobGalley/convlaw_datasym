@@ -59,9 +59,9 @@ These will then be augmented by $C_3$ permutation of the indices in $\mathbb{R}^
 
 Then, we set up exact gradient descents for the original and augmented training data for a simple linear model with MSE loss, as well as computation of the conservation laws
 
-$$ h(W_1, W_2, W_3) = \frac{W_1 + W_2 - 2W_3}{W_1 - W_2}$$
+$$ h(W_1, W_2, W_3) = \frac{W_1 - W_2}{W_1 + W_2 - 2W_3}$$
 
-which describes the position of $W_3$ in the range of $W_1$ and $W_2$.
+which can be used to describe the position of $W_3$ in the range of $W_1$ and $W_2$.
 Note that this is equivalent to
 
 $$\frac{1 - \lambda}{2} W_1 + \frac{1 + \lambda}{2} W_2 -  W_3 = 0$$
