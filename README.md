@@ -57,7 +57,7 @@ The result will then be plotted as in Figure 2 showing the individual runs and t
 For the number of base points `n_base=4`, we create random training data `X_base` and `y_base` in $\mathbb{R}^3$ and $\mathbb{R}$ respectively.
 These will then be augmented by $C_3$ permutation of the indices in $\mathbb{R}^3$ and trivial action on $\mathbb{R}$ in `X_aug` and `Y_aug`.
 
-Then, we setup exact gradient descents for the original and augmented training data for a simple linear model with MSE loss, as well as computation of the conservation laws
+Then, we set up exact gradient descents for the original and augmented training data for a simple linear model with MSE loss, as well as computation of the conservation laws
 
 $$ h(W_1, W_2, W_3) = \frac{W_1 + W_2 - 2W_3}{W_1 - W_2}$$
 
