@@ -19,7 +19,7 @@ in the terminal.
 ## How to run the code
 The scripts are self-contained and can thus easily run through the command line
 ```bash
-polynomial_loss_landscape
+python polynomial_loss_landscape
 python linear_conservation_law
 python attention_conservation_law
 ```
