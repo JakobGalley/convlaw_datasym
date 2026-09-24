@@ -1,5 +1,13 @@
 # Conservation Laws from Data Symmetry in Neural Networks
 This repository contains the code supplements for the paper "Conservation Laws from Data Symmetry in Neural Networks"
+```
+  @article{galley2026preservation,
+    title={Conservation Laws from Data Symmetry in Neural Networks},
+    author={Galley, Jakob and Shahverdi, Vahid and Flinth, Axel},
+    journal={arXiv:2606.10913},
+    year={2026}}
+```
+It is mainly released for transparency and reproducibility purposes. Should you however find this code useful for your research, please cite us!
 
 ## Requirements
 To run the code, you will need [python](https://www.python.org/) with the following packages
