@@ -94,8 +94,8 @@ The result will then be plotted as in Figure 3 showing the individual runs and t
 For the number of base points `n_base=10`, we create random training data `X_base` in $\mathbb{R}^{n\times d}$ for `n=5` and `d=8` by Gaussian initialization and scaling it with `data_scale`.
 The output data `Y_base` in $\mathbb{R}^{n\times m}$ for `m=1` is created by a pass through the Lightning Attention model for random `teacher_scale` scaled weights.
 
-These will then be augmented by $\mathrm{O}(d)$ which we sample by $QR$-decomposition.
-For a random matrix $A$, we return the orthogonal matrix $Q$ in the $QR$-decomposition and then change the signs accordingly to $R$.
+These will then be augmented by $\mathrm{O}(d)$ which we sample by $QR$ - decomposition.
+For a random matrix $A$, we return the orthogonal matrix $Q$ in the $QR$ - decomposition and then change the signs accordingly to $R$.
 We sample `num_haar_pairs` samples of orthogonal matrices and also add their additive inverse to `G_samples`.
 In the same way as in the linear model, we augment `X_base` and `y_base` by `G_samples` to create `X_aug` and `Y_aug`.
 
